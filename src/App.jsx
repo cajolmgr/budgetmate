@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
-import AddExpense from "./pages,AddExpense";
+import AddExpense from "./pages/AddExpense";
 import "./App.css";
 
 export default function App() {
