@@ -50,41 +50,6 @@ export default function AddExpense() {
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .nav-item {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 10px 20px;
-          border-radius: 10px;
-          cursor: pointer;
-          font-size: 13.5px;
-          font-weight: 400;
-          color: rgba(255,255,255,0.55);
-          transition: all 0.2s ease;
-          letter-spacing: 0.01em;
-        }
-        .nav-item:hover {
-          background: rgba(255,255,255,0.07);
-          color: rgba(255,255,255,0.9);
-        }
-        .nav-item.active {
-          background: rgba(255,255,255,0.12);
-          color: #fff;
-          font-weight: 500;
-        }
-        .nav-icon {
-          width: 28px;
-          height: 28px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(255,255,255,0.08);
-          border-radius: 7px;
-          font-size: 14px;
-        }
-        .nav-item.active .nav-icon {
-          background: rgba(109, 93, 232, 0.6);
-        }
 
         .form-input {
           width: 100%;
@@ -100,8 +65,8 @@ export default function AddExpense() {
           appearance: none;
         }
         .form-input:focus {
-          border-color: #6d5de8;
-          box-shadow: 0 0 0 3px rgba(109,93,232,0.1);
+          border-color: #33723c;
+            box-shadow: 0 0 0 3px rgba(109,93,232,0.1);
           background: #fff;
         }
         .form-input::placeholder {
@@ -193,7 +158,6 @@ export default function AddExpense() {
         <div style={styles.card}>
           {/* Header */}
           <div style={styles.cardHeader}>
-            <button style={styles.backBtn}>←</button>
             <div>
               <div style={styles.cardTitle}>Add Expense</div>
               <div style={styles.cardSubtitle}>Enter your expense details</div>
@@ -288,62 +252,7 @@ export default function AddExpense() {
 }
 
 const styles = {
-  root: {
-    display: "flex",
-    height: "100vh",
-    width: "100%",
-    fontFamily: "'DM Sans', sans-serif",
-    background: "#f0f0f7",
-    overflow: "hidden",
-  },
-  sidebar: {
-    width: 220,
-    background: "linear-gradient(180deg, #1a1740 0%, #12102e 100%)",
-    display: "flex",
-    flexDirection: "column",
-    padding: "24px 12px",
-    flexShrink: 0,
-    overflowY: "auto",
-  },
-  logo: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    padding: "4px 10px 24px",
-  },
-  logoIcon: {
-    width: 32,
-    height: 32,
-    background: "linear-gradient(135deg, #6d5de8, #a78bf6)",
-    borderRadius: 8,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#fff",
-    fontFamily: "'Syne', sans-serif",
-    fontWeight: 700,
-    fontSize: 16,
-  },
-  logoText: {
-    color: "#fff",
-    fontFamily: "'Syne', sans-serif",
-    fontWeight: 700,
-    fontSize: 16,
-    letterSpacing: "-0.01em",
-  },
-  nav: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 2,
-  },
-  main: {
-    flex: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 32,
-    overflow: "auto",
-  },
+  
   card: {
     background: "#fff",
     borderRadius: 18,
@@ -359,20 +268,7 @@ const styles = {
     padding: "22px 26px 18px",
     borderBottom: "1.5px solid #f0f0f7",
   },
-  backBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 9,
-    border: "1.5px solid #e8e8f0",
-    background: "transparent",
-    cursor: "pointer",
-    fontSize: 16,
-    color: "#555",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
+
   cardTitle: {
     fontFamily: "'Syne', sans-serif",
     fontWeight: 700,
