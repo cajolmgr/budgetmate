@@ -1,0 +1,74 @@
+/* Background */
+.income-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+  font-family: Arial, sans-serif;
+}
+
+/* Card */
+.income-card {
+  width: 400px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease;
+}
+
+.income-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Title */
+.income-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2e7d32;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Inputs */
+.income-card input,
+.income-card textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.income-card input:focus,
+.income-card textarea:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* Button */
+.income-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.income-btn:hover {
+  background: #388e3c;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .income-card {
+    width: 90%;
+  }
+}

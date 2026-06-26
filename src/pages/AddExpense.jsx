@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Navbar from "../components/Navbar";
+
 
 const CATEGORIES = [
   "Food & Dining",
@@ -26,17 +28,53 @@ const PAYMENT_METHODS = [
 export default function AddExpense() {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [date, setDate] = useState("2024-05-24");
+  const [date, setDate] = useState("2026-06-01");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [note, setNote] = useState("");
   const [activeNav, setActiveNav] = useState("Expenses");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = () => {
-    if (!amount || !category || !paymentMethod) return;
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 2000);
-  };
+  const handleSubmit = async () => {
+  if (!amount || !category || !paymentMethod) {
+    alert("Please fill all required fields");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/add-expense", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: parseFloat(amount),
+        category,
+        expense_date: date,
+        payment_method: paymentMethod,
+        note,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setSubmitted(true);
+
+      setAmount("");
+      setCategory("");
+      setDate(new Date().toISOString().split("T")[0]);
+      setPaymentMethod("");
+      setNote("");
+
+      setTimeout(() => setSubmitted(false), 2000);
+    } else {
+      alert(data.detail || "Failed to add expense");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Backend connection failed");
+  }
+};
 
   const formatDate = (val) => {
     const d = new Date(val);
@@ -155,8 +193,10 @@ export default function AddExpense() {
 
       {/* Main */}
       <main style={styles.main}>
+        <Navbar/>
         <div style={styles.card}>
           {/* Header */}
+          
           <div style={styles.cardHeader}>
             <div>
               <div style={styles.cardTitle}>Add Expense</div>

@@ -2,6 +2,8 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import AddExpense from "./pages/AddExpense";
+import BudgetsGoalPlanner from "./components/BudgetsGoalPlanner";
+import Income from "./pages/Income";
 // import Income from "./pages/Income";
 // import Budgets from "./pages/Budgets";
 // import Goals from "./pages/Goals";
@@ -20,8 +22,11 @@ export default function App() {
         {activePage === "Dashboard" && <Dashboard />}
 
         {activePage === "Expenses" && <AddExpense />}
-
-        {/* {activePage === "Income" && <Income />}
+        
+        {/* Budgets-> label of sidebar, BudgetGoalPlanner->Component(file name) */}
+        {activePage === "Budgets" && <BudgetsGoalPlanner />} 
+        {activePage === "Income" && <Income />}
+        {/* 
 
         {activePage === "Budgets" && <Budgets />}
 

@@ -1,15 +1,25 @@
+// import { FaBullseye, FaChartLine, FaCog, FaFileAlt } from "react-icons/fa";
+import {
+  FaHome,
+  FaWallet,
+  FaChartPie,
+  FaBullseye,
+  FaChartLine,
+  FaFileAlt,
+  FaCog,
+} from "react-icons/fa";
 import "./Sidebar.css";
 
 const navItems = [
-  { label: "Dashboard", icon: "🏠" },
-  { label: "Expenses", icon: "💳" },
-  { label: "Income", icon: "💰" },
-  { label: "Budgets", icon: "📊" },
-  { label: "Goals", icon: "🎯" },
-  { label: "Analytics", icon: "📈" },
-  { label: "Reports", icon: "📄" },
-  { label: "Recommendations", icon: "⚙️" },
-  { label: "Settings", icon: "🔧" },
+  { label: "Dashboard", icon:<FaHome/>},
+  { label: "Expenses", icon: <FaWallet/> },
+  { label: "Income", icon:  <FaWallet/> },
+  { label: "Budgets", icon:<FaChartPie/> },
+  { label: "Goals", icon:<FaBullseye/> },
+  { label: "Analytics", icon: <FaChartLine/> },
+  { label: "Reports", icon: <FaFileAlt/> },
+  { label: "Recommendations", icon: <FaCog/> },
+  { label: "Settings", icon: <FaCog/> },
 ];
 
 export default function Sidebar({ activePage, onNavigate }) {
@@ -17,7 +27,7 @@ export default function Sidebar({ activePage, onNavigate }) {
     <aside className="sidebar">
       <div className="sidebar-logo">
         <span className="logo-icon">💼</span>
-        <span className="logo-text">BudgetWise</span>
+        <span className="logo-text">BudgetMate</span>
       </div>
 
       <nav className="sidebar-nav">

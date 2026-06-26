@@ -1,12 +1,12 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const data = [
-  { name: "Food",          value: 30, color: "#6366f1" },
-  { name: "Transport",     value: 20, color: "#38bdf8" },
-  { name: "Shopping",      value: 15, color: "#f59e0b" },
-  { name: "Bills",         value: 15, color: "#34d399" },
-  { name: "Entertainment", value: 10, color: "#a78bfa" },
-  { name: "Others",        value: 10, color: "#94a3b8" },
+  { name: "Food",          value: 30, color: "#4548ee" },
+  { name: "Transport",     value: 20, color: "#27a7df" },
+  { name: "Shopping",      value: 15, color: "#b4770c" },
+  { name: "Bills",         value: 15, color: "#12ca87" },
+  { name: "Entertainment", value: 10, color: "#6549b9" },
+  { name: "Others",        value: 10, color: "#314c71" },
 ];
 
 export default function ExpensePieChart() {

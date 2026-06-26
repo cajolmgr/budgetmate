@@ -1,11 +1,17 @@
 import "./RecentTransactions.css";
-
+import {
+  FaShoppingCart,
+  FaBriefcase,
+  FaFilm,
+  FaBolt,
+  FaDumbbell
+} from "react-icons/fa";
 const transactions = [
-  { id: 1, title: "Grocery Shopping", date: "May 24, 2024", category: "Food",        amount: -1250, icon: "🛒" },
-  { id: 2, title: "Salary Credit",    date: "May 23, 2024", category: "Income",      amount: 85000, icon: "💼" },
-  { id: 3, title: "Netflix",          date: "May 22, 2024", category: "Entertainment", amount: -599, icon: "🎬" },
-  { id: 4, title: "Electricity Bill", date: "May 21, 2024", category: "Bills",       amount: -2400, icon: "⚡" },
-  { id: 5, title: "Gym Membership",   date: "May 20, 2024", category: "Health",      amount: -1500, icon: "🏋️" },
+  { id: 1, title: "Grocery Shopping", date: "May 24, 2024", icon: <FaShoppingCart/>,        amount: -1250, category: "Food" },
+  { id: 2, title: "Salary Credit",    date: "May 23, 2024", icon: <FaBriefcase/>,      amount: 85000, category: "Salary" },
+  { id: 3, title: "Netflix",          date: "May 22, 2024", icon: <FaFilm/>, amount: -599, category: "Entertainment" },
+  { id: 4, title: "Electricity Bill", date: "May 21, 2024", icon: <FaBolt/>,       amount: -2400, category: "Electricity" },
+  { id: 5, title: "Gym Membership",   date: "May 20, 2024", icon: <FaDumbbell/>,      amount: -1500, category: "Health" },
 ];
 
 export default function RecentTransactions() {
