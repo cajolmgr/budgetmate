@@ -51,6 +51,7 @@ def add_expense(expense: Expense):
 class Income(BaseModel):
     amount: float
     source: str
+    payment_method: str
     income_date: str
     note: str = ""
 
@@ -61,16 +62,17 @@ def add_income(income: Income):
 
     sql = """
     INSERT INTO income
-    (user_id, amount, source, income_date, note)
-    VALUES (%s, %s, %s, %s, %s)
+    (user_id, amount, source, payment_method, income_date, note)
+    VALUES (%s, %s, %s, %s, %s, %s)
     """
 
     cursor.execute(sql, (
-        1,
-        income.amount,
-        income.source,
-        income.income_date,
-        income.note
+    1,
+    income.amount,
+    income.source,
+    income.payment_method,
+    income.income_date,
+    income.note
     ))
 
     conn.commit()

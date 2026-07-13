@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import AddExpense from "./pages/AddExpense";
 import BudgetsGoalPlanner from "./components/BudgetsGoalPlanner";
 import Income from "./pages/Income";
+import AddIncome from "./pages/AddIncome";
 // import Income from "./pages/Income";
 // import Budgets from "./pages/Budgets";
 // import Goals from "./pages/Goals";
@@ -25,7 +26,13 @@ export default function App() {
         
         {/* Budgets-> label of sidebar, BudgetGoalPlanner->Component(file name) */}
         {activePage === "Budgets" && <BudgetsGoalPlanner />} 
-        {activePage === "Income" && <Income />}
+        {activePage === "Income" && (
+          <Income onNavigate={setActivePage} />
+        )}
+
+        {activePage === "Add Income" && (
+          <AddIncome onNavigate={setActivePage} />
+        )}
         {/* 
 
         {activePage === "Budgets" && <Budgets />}

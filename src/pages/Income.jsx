@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import Navbar from '../components/Navbar';
+import {
+  FaBriefcase,
+  FaLaptopCode,
+  FaStore,
+  FaChartLine,
+  FaGift,
+} from "react-icons/fa";
 
 
 const COLORS = {
@@ -50,7 +57,11 @@ function SourceBadge({ source }) {
   const key = source.toLowerCase();
   const style = COLORS[key] || COLORS.other;
   const icons = {
-    salary: "💼", freelance: "💻", business: "🏪", investment: "📈", other: "🎁",
+    salary: <FaBriefcase size={14} />,
+    freelance: <FaLaptopCode size={14} />,
+    business: <FaStore size={14} />,
+    investment: <FaChartLine size={14} />,
+    other: <FaGift size={14} />,  
   };
   return (
     <span style={{
@@ -175,7 +186,7 @@ function DonutChart({ segments }) {
 
 const PAGE_SIZE = 5;
 
-export default function Income() {
+export default function Income({ onNavigate }) {
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("All Sources");
   const [monthFilter, setMonthFilter] = useState("This Month");
@@ -184,7 +195,6 @@ export default function Income() {
 
   const [transactions, setTransactions] = useState(TRANSACTIONS);
 
-  const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
   const [incomeAmount, setIncomeAmount] = useState("");
   const [incomeSource, setIncomeSource] = useState("");
   const [incomeDate, setIncomeDate] = useState(new Date().toISOString().split("T")[0]);
@@ -509,7 +519,7 @@ export default function Income() {
               fontWeight: 500, cursor: "pointer", display: "flex",
               alignItems: "center", gap: 6,
             }}
-            onClick={() => setIsIncomeModalOpen(true)}
+            onClick={() => onNavigate("Add Income")}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#3C3489")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "#534AB7")}
           >
