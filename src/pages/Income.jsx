@@ -6,6 +6,7 @@ import {
   FaStore,
   FaChartLine,
   FaGift,
+  FaMoneyBillWave,
 } from "react-icons/fa";
 
 
@@ -17,18 +18,6 @@ const COLORS = {
   other: { bg: "#FCEBEB", text: "#A32D2D", dot: "#E24B4A" },
 };
 
-const TRANSACTIONS = [
-  { id: 1, date: "May 24, 2024", source: "Salary", note: "May Salary", amount: 60000, method: "Bank Transfer" },
-  { id: 2, date: "May 20, 2024", source: "Freelance", note: "Website Development", amount: 12000, method: "eSewa" },
-  { id: 3, date: "May 15, 2024", source: "Business", note: "Product Sales", amount: 6000, method: "Bank Transfer" },
-  { id: 4, date: "May 10, 2024", source: "Investment", note: "Dividend Income", amount: 4000, method: "Bank Transfer" },
-  { id: 5, date: "May 05, 2024", source: "Other", note: "Gift Received", amount: 3000, method: "Cash" },
-  { id: 6, date: "Apr 28, 2024", source: "Salary", note: "April Salary", amount: 60000, method: "Bank Transfer" },
-  { id: 7, date: "Apr 15, 2024", source: "Freelance", note: "Logo Design", amount: 8000, method: "eSewa" },
-  { id: 8, date: "Apr 10, 2024", source: "Business", note: "Consulting Fee", amount: 5000, method: "Bank Transfer" },
-  { id: 9, date: "Apr 05, 2024", source: "Investment", note: "Stock Dividend", amount: 3500, method: "Bank Transfer" },
-  { id: 10, date: "Apr 01, 2024", source: "Other", note: "Bonus", amount: 2500, method: "Cash" },
-];
 
 const INCOME_SOURCES = ["Salary", "Freelance", "Business", "Investment", "Other"];
 const PAYMENT_METHODS = ["Cash", "eSewa", "Khalti", "Bank Transfer"]; 
@@ -54,7 +43,7 @@ const DONUT_SEGMENTS = [
 const CIRCUMFERENCE = 2 * Math.PI * 44; // r=44
 
 function SourceBadge({ source }) {
-  const key = source.toLowerCase();
+  const key = source.toLowerCase().replace(/\s+/g, "");
   const style = COLORS[key] || COLORS.other;
   const icons = {
     salary: <FaBriefcase size={14} />,
@@ -64,14 +53,33 @@ function SourceBadge({ source }) {
     other: <FaGift size={14} />,  
   };
   return (
-    <span style={{
-      display: "inline-flex", alignItems: "center", gap: 5,
-      background: style.bg, color: style.text,
-      fontSize: 12, fontWeight: 500,
-      padding: "3px 10px", borderRadius: 20,
-    }}>
-      <span>{icons[key] || "•"}</span> {source}
-    </span>
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        background: style.bg,
+        color: style.text,
+        fontSize: 13,
+        fontWeight: 500,
+        padding: "8px 14px",
+        borderRadius: 20,
+        whiteSpace: "nowrap",
+      }}
+    >
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {icons[key] || <FaMoneyBillWave size={14} />}
+  </span>
+
+  <span>{source}</span>
+</span>
   );
 }
 
@@ -187,13 +195,41 @@ function DonutChart({ segments }) {
 const PAGE_SIZE = 5;
 
 export default function Income({ onNavigate }) {
+  
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("All Sources");
   const [monthFilter, setMonthFilter] = useState("This Month");
   const [page, setPage] = useState(1);
   const [chartRange, setChartRange] = useState("Last 6 Months");
 
-  const [transactions, setTransactions] = useState(TRANSACTIONS);
+  const [transactions, setTransactions] = useState([]);
+  useEffect(() => {
+  fetchIncome();
+  }, []);
+
+  const fetchIncome = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/income");
+      const data = await response.json();
+
+      const formatted = data.map((item) => ({
+        id: item.id,
+        date: new Date(item.income_date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+        source: item.source,
+        note: item.note,
+        amount: item.amount,
+        method: item.payment_method,
+      }));
+
+      setTransactions(formatted);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const [incomeAmount, setIncomeAmount] = useState("");
   const [incomeSource, setIncomeSource] = useState("");
@@ -229,12 +265,7 @@ export default function Income({ onNavigate }) {
     background: "#fff", outline: "none",
   };
 
-  const closeIncomeModal = () => {
-    setIsIncomeModalOpen(false);
-    setIncomeSubmitting(false);
-    setIncomeSubmitted(false);
-  };
-
+  
   const resetIncomeForm = () => {
     setIncomeAmount("");
     setIncomeSource("");
@@ -271,6 +302,8 @@ export default function Income({ onNavigate }) {
 
       setIncomeSubmitted(true);
       resetIncomeForm();
+
+      fetchIncome(); // Refresh the income list after adding a new entry
 
       setTimeout(() => {
         setIncomeSubmitted(false);

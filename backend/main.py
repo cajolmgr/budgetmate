@@ -79,3 +79,27 @@ def add_income(income: Income):
     close_connection(conn, cursor)
 
     return {"message": "income added"}
+
+@app.get("/income")
+def get_income():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            id,
+            income_date,
+            source,
+            note,
+            amount,
+            payment_method
+        FROM income
+        ORDER BY income_date DESC
+    """)
+
+    data = cursor.fetchall()
+
+    cursor.close()
+    close_connection(conn)
+
+    return data
