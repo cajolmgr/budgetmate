@@ -167,23 +167,16 @@ const styles = {
 };
 
 function PasswordInput({ id, value, onChange, placeholder }) {
-  const [show, setShow] = useState(false);
-  const [focused, setFocused] = useState(false);
   return (
     <div style={styles.passwordWrapper}>
       <input
         id={id}
-        type={show ? "text" : "password"}
+        type="password"
         value={value}
         onChange={onChange}
         placeholder={placeholder || "Enter your password"}
-        style={{ ...styles.input, paddingRight: 40, ...(focused ? styles.inputFocus : {}) }}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        style={styles.input}
       />
-      <button style={styles.eyeBtn} onClick={() => setShow(!show)} type="button">
-        {show ? "🙈" : "👁️"}
-      </button>
     </div>
   );
 }
@@ -363,10 +356,13 @@ function RegisterCard({ onRegisterSuccess }) {
   );
 }
 
-export default function LoginRegister() {
+export default function LoginRegister({ onLoginSuccess }) {
   const handleLoginSuccess = (user) => {
-    console.log("Logged in:", user);
+    
     // Navigate to dashboard here, e.g.: navigate("/dashboard")
+    if (onLoginSuccess) {
+      onLoginSuccess(user);
+    }
   };
 
   return (

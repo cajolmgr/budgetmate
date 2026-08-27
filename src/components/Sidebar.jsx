@@ -22,7 +22,7 @@ const navItems = [
   { label: "Settings", icon: <FaCog/> },
 ];
 
-export default function Sidebar({ activePage, onNavigate }) {
+export default function Sidebar({ activePage, onNavigate, onLogout }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -34,7 +34,9 @@ export default function Sidebar({ activePage, onNavigate }) {
         {navItems.map((item) => (
           <button
             key={item.label}
-            className={`nav-item ${activePage === item.label ? "active" : ""}`}
+            className={`nav-item ${
+              activePage === item.label ? "active" : ""
+            }`}
             onClick={() => onNavigate(item.label)}
           >
             <span className="nav-icon">{item.icon}</span>
@@ -43,7 +45,10 @@ export default function Sidebar({ activePage, onNavigate }) {
         ))}
       </nav>
 
-      <button className="nav-item logout-btn" onClick={() => alert("Logged out!")}>
+      <button
+        className="nav-item logout-btn"
+        onClick={onLogout}
+      >
         <span className="nav-icon">🚪</span>
         <span className="nav-label">Logout</span>
       </button>
