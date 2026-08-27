@@ -209,7 +209,7 @@ export default function Income({ onNavigate }) {
 
   const fetchIncome = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8001/income");
+      const response = await fetch("http://127.0.0.1:8000/income");
       const data = await response.json();
 
       const formatted = data.map((item) => ({
@@ -282,7 +282,7 @@ export default function Income({ onNavigate }) {
 
     setIncomeSubmitting(true);
     try {
-      const res = await fetch("http://127.0.0.1:8001/add-income", {
+      const res = await fetch("http://127.0.0.1:8000/add-income", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
