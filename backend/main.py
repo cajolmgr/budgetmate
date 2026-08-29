@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from database import get_connection, close_connection
+from auth import get_current_user
 from auth import router as auth_router
 
 app = FastAPI()
@@ -24,7 +25,10 @@ class Expense(BaseModel):
     note: str = ""
 
 @app.post("/add-expense")
-def add_expense(expense: Expense):
+def add_expense(
+    expense: Expense,
+    current_user: dict = Depends(get_current_user)
+):
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -35,7 +39,7 @@ def add_expense(expense: Expense):
     """
 
     cursor.execute(sql, (
-        1,
+        current_user["user_id"],
         expense.amount,
         expense.category,
         expense.expense_date,
@@ -48,14 +52,54 @@ def add_expense(expense: Expense):
 
     return {"message": "expense added"}
 
+@app.get("/expenses")
+def get_expenses(current_user: dict = Depends(get_current_user)):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT
+                id,
+                amount,
+                category,
+                expense_date,
+                payment_method,
+                note
+            FROM expenses
+            WHERE user_id = %s
+            ORDER BY expense_date DESC, id DESC
+        """, (current_user["user_id"],))
+
+        rows = cursor.fetchall()
+
+        expenses = []
+
+        for row in rows:
+            expenses.append({
+                "id": row[0],
+                "amount": float(row[1]),
+                "category": row[2],
+                "expense_date": row[3],
+                "payment_method": row[4],
+                "note": row[5]
+            })
+
+        return expenses
+
+    finally:
+        close_connection(conn, cursor)
 
 # ---------------- INCOME ----------------
+
 class Income(BaseModel):
+    user_id: int
     amount: float
     source: str
     payment_method: str
     income_date: str
     note: str = ""
+
 
 @app.post("/add-income")
 def add_income(income: Income):
@@ -69,22 +113,25 @@ def add_income(income: Income):
     """
 
     cursor.execute(sql, (
-    1,
-    income.amount,
-    income.source,
-    income.payment_method,
-    income.income_date,
-    income.note
+        income.user_id,
+        income.amount,
+        income.source,
+        income.payment_method,
+        income.income_date,
+        income.note
     ))
 
     conn.commit()
+
     close_connection(conn, cursor)
 
     return {"message": "income added"}
 
-@app.get("/income")
-def get_income():
+
+@app.get("/income/{user_id}")
+def get_income(user_id: int):
     conn = get_connection()
+
     from psycopg2.extras import RealDictCursor
 
     cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -98,8 +145,9 @@ def get_income():
             amount,
             payment_method
         FROM income
+        WHERE user_id = %s
         ORDER BY income_date DESC
-    """)
+    """, (user_id,))
 
     data = cursor.fetchall()
 

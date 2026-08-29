@@ -28,7 +28,15 @@ const PAYMENT_METHODS = [
 export default function AddExpense() {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [date, setDate] = useState("2026-06-01");
+  const getToday = () => {
+  const today = new Date();
+
+    return `${today.getFullYear()}-${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  };
+
+  const [date, setDate] = useState(getToday());
   const [paymentMethod, setPaymentMethod] = useState("");
   const [note, setNote] = useState("");
   const [activeNav, setActiveNav] = useState("Expenses");
@@ -41,10 +49,13 @@ export default function AddExpense() {
   }
 
   try {
+    const token = localStorage.getItem("token");
+
     const response = await fetch("http://127.0.0.1:8000/add-expense", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         amount: parseFloat(amount),
@@ -62,7 +73,7 @@ export default function AddExpense() {
 
       setAmount("");
       setCategory("");
-      setDate(new Date().toISOString().split("T")[0]);
+      setDate(getToday());
       setPaymentMethod("");
       setNote("");
 
@@ -77,9 +88,20 @@ export default function AddExpense() {
 };
 
   const formatDate = (val) => {
-    const d = new Date(val);
-    return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  };
+  if (!val) return "";
+
+  const [year, month, day] = val.split("-");
+
+  return new Date(
+    Number(year),
+    Number(month) - 1,
+    Number(day)
+  ).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
   return (
     <div style={styles.root}>

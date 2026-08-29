@@ -15,6 +15,7 @@ import AddIncome from "./pages/AddIncome";
 
 import Login from "./pages/login";
 import Register from "./pages/Register";
+import Profile from "./pages/Profile";
 
 import "./App.css";
 
@@ -49,6 +50,10 @@ function App() {
     <BrowserRouter>
 
       <Routes>
+
+        {/* PROFILE */}
+
+        <Route path="/profile" element={<Profile />} />
 
         {/* LOGIN */}
 
@@ -95,6 +100,10 @@ function App() {
                 />
 
                 <main className="main-content">
+
+                  {activePage === "Profile" && (
+                    <Profile onLogout={handleLogout} />
+                  )}
 
                   {activePage === "Dashboard" && (
                     <Dashboard />

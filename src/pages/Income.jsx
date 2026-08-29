@@ -207,29 +207,51 @@ export default function Income({ onNavigate }) {
   fetchIncome();
   }, []);
 
-  const fetchIncome = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/income");
-      const data = await response.json();
+ const fetchIncome = async () => {
+  try {
+    const storedUser = localStorage.getItem("user");
 
-      const formatted = data.map((item) => ({
-        id: item.id,
-        date: new Date(item.income_date).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        }),
-        source: item.source,
-        note: item.note,
-        amount: item.amount,
-        method: item.payment_method,
-      }));
-
-      setTransactions(formatted);
-    } catch (err) {
-      console.error(err);
+    if (!storedUser) {
+      console.error("No logged-in user");
+      return;
     }
-  };
+
+    const user = JSON.parse(storedUser);
+
+    if (!user.id) {
+      console.error("User ID not found");
+      return;
+    }
+
+    const response = await fetch(
+      `http://127.0.0.1:8000/income/${user.id}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch income");
+    }
+
+    const data = await response.json();
+
+    const formatted = data.map((item) => ({
+      id: item.id,
+      date: new Date(item.income_date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+      source: item.source,
+      note: item.note,
+      amount: item.amount,
+      method: item.payment_method,
+    }));
+
+    setTransactions(formatted);
+
+  } catch (err) {
+    console.error("Error fetching income:", err);
+  }
+};
 
   const [incomeAmount, setIncomeAmount] = useState("");
   const [incomeSource, setIncomeSource] = useState("");
@@ -274,52 +296,94 @@ export default function Income({ onNavigate }) {
     setIncomeNote("");
   };
 
-  const handleIncomeSubmit = async () => {
-    if (!incomeAmount || !incomeSource || !incomePaymentMethod) {
-      alert("Please fill all required fields");
+ const handleIncomeSubmit = async () => {
+  if (!incomeAmount || !incomeSource || !incomePaymentMethod) {
+    alert("Please fill all required fields");
+    return;
+  }
+
+  const storedUser = localStorage.getItem("user");
+
+  if (!storedUser) {
+    alert("User is not logged in");
+    return;
+  }
+
+  const user = JSON.parse(storedUser);
+
+  console.log("Logged in user:", user);
+  console.log("User ID:", user.id);
+
+  if (!user.id) {
+    alert("User ID not found. Please log in again.");
+    return;
+  }
+
+  const requestBody = {
+    user_id: user.id,
+    amount: parseFloat(incomeAmount),
+    source: incomeSource,
+    payment_method: incomePaymentMethod,
+    income_date: incomeDate,
+    note: incomeNote || "",
+  };
+
+  console.log("Sending income:", requestBody);
+
+  setIncomeSubmitting(true);
+
+  try {
+    const res = await fetch("http://127.0.0.1:8000/add-income", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const data = await res.json();
+
+    console.log("Status:", res.status);
+    console.log("Response:", data);
+
+    if (!res.ok) {
+      console.error("Backend validation error:", data);
+
+      if (Array.isArray(data.detail)) {
+        const errors = data.detail
+          .map((error) => {
+            const field = error.loc?.join(" → ") || "unknown field";
+            return `${field}: ${error.msg}`;
+          })
+          .join("\n");
+
+        alert(`Validation error:\n\n${errors}`);
+      } else {
+        alert(data.detail || "Failed to add income");
+      }
+
       return;
     }
 
-    setIncomeSubmitting(true);
-    try {
-      const res = await fetch("http://127.0.0.1:8000/add-income", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: parseFloat(incomeAmount),
-          source: incomeSource,
-          income_date: incomeDate,
-          note: incomeNote || "",
-        }),
-      });
+    alert("Income added successfully!");
 
-      const data = await res.json().catch(() => ({}));
+    setIncomeSubmitted(true);
+    resetIncomeForm();
 
-      if (!res.ok) {
-        alert(data.detail || "Failed to add income");
-        return;
-      }
+    await fetchIncome();
 
-      setIncomeSubmitted(true);
-      resetIncomeForm();
+    setTimeout(() => {
+      setIncomeSubmitted(false);
+      closeIncomeModal();
+    }, 1200);
 
-      fetchIncome(); // Refresh the income list after adding a new entry
-
-      setTimeout(() => {
-        setIncomeSubmitted(false);
-        closeIncomeModal();
-      }, 1200);
-
-      // NOTE: Current UI uses demo transactions. Backend storage is implemented.
-      // If you later add GET /income-list, call it here and setTransactions(...) after success.
-    } catch (e) {
-      console.error(e);
-      alert("Backend connection failed");
-    } finally {
-      setIncomeSubmitting(false);
-    }
-  };
-
+  } catch (error) {
+    console.error("Connection error:", error);
+    alert("Backend connection failed");
+  } finally {
+    setIncomeSubmitting(false);
+  }
+};
   const IncomeModal = () => {
     if (!isIncomeModalOpen) return null;
 

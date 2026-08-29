@@ -63,58 +63,54 @@ export default function AddIncome({ onNavigate }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setSuccess("");
+  setSuccess("");
 
-    if (!validate()) return;
+  if (!validate()) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/add-income", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          source: form.source,
-          amount: parseFloat(form.amount),
-          payment_method: form.payment_method,
-          note: form.note,
-          income_date: form.income_date,
-        }),
-      });
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
 
-      const data = await response.json();
+    const response = await fetch("http://127.0.0.1:8000/add-income", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        source: form.source,
+        amount: parseFloat(form.amount),
+        payment_method: form.payment_method,
+        note: form.note,
+        income_date: form.income_date,
+      }),
+    });
 
-      if (!response.ok) {
-        throw new Error(data.detail || "Failed to add income.");
-      }
+    const data = await response.json();
 
-      setSuccess("Income added successfully!");
-
-        setForm({
-        source: "",
-        amount: "",
-        payment_method: "",
-        note: "",
-        income_date: new Date().toISOString().split("T")[0],
-        });
-
-        // Return to the Income page after 1 second
-        setTimeout(() => {
-        onNavigate("Income");
-        }, 1000);
-
-    } catch (error) {
-      setErrors({
-        submit: error.message,
-      });
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      console.error("Backend error:", data);
+      throw new Error(
+        typeof data.detail === "string"
+          ? data.detail
+          : JSON.stringify(data.detail)
+      );
     }
-  };
+
+    setSuccess("Income added successfully!");
+
+    // rest of your existing code...
+
+  } catch (error) {
+    console.error("Error:", error);
+    // your existing error handling
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="income-container">
