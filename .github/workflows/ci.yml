@@ -22,18 +22,28 @@ jobs:
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
+
+            - name: Login to DockerHub
+              uses: docker/login-action@v3
+              with:
+                username: ${{ secrets.DOCKERHUB_USERNAME}}
+                password: ${{ secrets.DOCKERHUB_TOKEN }}
             
             - name: Build backend image
               uses: docker/build-push-action@v7
               with:
                 context: ./backend
-                push: false
-                tags: budgetmate-backend:ci
+                push: true
+                tags: | 
+                  ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-backend:latest
+                  ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-backend:${{ github.sha }}
 
             - name: Build frontend image
               uses: docker/build-push-action@v7
               with:
                 context: ./frontend
-                push: false
-                tags: budgetmate-frontend:ci
+                push: true
+                tags: | 
+                  ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-frontend:latest
+                  ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-frontend:${{ github.sha }}
 
