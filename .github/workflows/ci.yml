@@ -92,6 +92,14 @@ jobs:
           python -m pip install pytest requests
           python -m pytest backend/tests/
 
+      - name: Show Backend Logs
+        if: always()
+        run: docker logs budgetmate-backend
+
+      - name: Check Database Tables
+        if: always()
+        run: docker exec budgetmate-postgres psql -U postgres -d budgetmate -c "\dt"
+
       - name: Stop containers
         if: always()
         run: docker compose down
