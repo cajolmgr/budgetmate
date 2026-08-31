@@ -72,6 +72,19 @@ jobs:
             sleep 2
           done
 
+      - name: Initialize Database
+        run: |
+          docker exec -i budgetmate-postgres psql \
+            -U postgres \
+            -d budgetmate < database/init.sql
+
+      - name: Check Database Tables
+        run: |
+          docker exec budgetmate-postgres psql \
+            -U postgres \
+            -d budgetmate \
+            -c "\dt"
+            
       - name: Start Backend
         run: docker compose up -d backend
 
