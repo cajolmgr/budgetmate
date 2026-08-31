@@ -1,0 +1,38 @@
+name: budgetmate CI
+
+on:
+    push:
+        branches:
+            - main
+            - master
+    pull_request:
+        branches:
+            - main
+            - master
+
+jobs:
+    build:
+        name: Build Docker Images
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+            
+            - name: Build backend image
+              uses: docker/build-push-action@v7
+              with:
+                context: ./backend
+                push: false
+                tags: budgetmate-backend:ci
+
+            - name: Build frontend image
+              uses: docker/build-push-action@v7
+              with:
+                context: ./frontend
+                push: false
+                tags: budgetmate-frontend:ci
+

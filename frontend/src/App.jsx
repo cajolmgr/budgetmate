@@ -13,7 +13,7 @@ import BudgetsGoalPlanner from "./components/BudgetsGoalPlanner";
 import Income from "./pages/Income";
 import AddIncome from "./pages/AddIncome";
 
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 
