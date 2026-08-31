@@ -60,6 +60,11 @@ jobs:
       - name: Start PostgreSQL
         run: docker compose up -d postgres
 
+      - name: Check PostgreSQL
+        run: |
+          docker compose ps postgres
+          docker compose logs postgres
+
       - name: Wait for PostgreSQL
         run: |
           for i in {1..30}; do
@@ -84,7 +89,7 @@ jobs:
             -U postgres \
             -d budgetmate \
             -c "\dt"
-            
+
       - name: Start Backend
         run: docker compose up -d backend
 
