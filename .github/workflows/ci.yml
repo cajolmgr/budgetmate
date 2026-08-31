@@ -1,4 +1,4 @@
-```yaml
+
 name: budgetmate CI
 
 on:
@@ -93,4 +93,4 @@ jobs:
       - name: Stop containers
         if: always()
         run: docker compose down
-```
+
