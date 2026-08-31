@@ -58,7 +58,11 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-frontend:${{ github.sha }}
 
       - name: Start PostgreSQL
-        run: docker compose up -d postgres
+        run: |
+          docker compose up -d postgres
+          sleep 5
+          docker compose ps postgres
+          docker compose logs postgres
 
       - name: Check PostgreSQL
         run: |
