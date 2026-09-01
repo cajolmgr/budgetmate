@@ -1,10 +1,9 @@
 from auth import get_current_user
 from auth import router as auth_router
+from database import close_connection, get_connection
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
-from database import close_connection, get_connection
 
 app = FastAPI()
 app.include_router(auth_router)
