@@ -62,6 +62,11 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-frontend:${{ github.sha }}
 
+      - name: Run API Tests
+        run: |
+          python -m pip install pytest requests
+          python -m pytest backend/tests/
+
       - name: Stop containers
         if: always()
         run: docker compose down
