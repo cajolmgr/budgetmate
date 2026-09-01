@@ -1,17 +1,15 @@
-from fastapi import APIRouter, HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jose import JWTError, jwt
 from passlib.context import CryptContext
-from jose import jwt
-from database import get_connection, close_connection
+from pydantic import BaseModel
+
+from database import close_connection, get_connection
 
 router = APIRouter(prefix="/auth")
 
 # Password hashing
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # JWT settings
 SECRET_KEY = "budgetmate-secret-key-change-later"
@@ -20,38 +18,25 @@ ALGORITHM = "HS256"
 security = HTTPBearer()
 
 
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
-):
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
 
     try:
-        payload = jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM]
-        )
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
         user_id = payload.get("user_id")
 
         if user_id is None:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid authentication token"
-            )
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
 
-        return {
-            "user_id": user_id,
-            "email": payload.get("email")
-        }
+        return {"user_id": user_id, "email": payload.get("email")}
 
-    except Exception:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid or expired token"
-        )
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
 
 # ---------------- REQUEST MODELS ----------------
+
 
 class RegisterRequest(BaseModel):
     name: str
@@ -66,6 +51,7 @@ class LoginRequest(BaseModel):
 
 # ---------------- REGISTER ----------------
 
+
 @router.post("/register")
 def register(user: RegisterRequest):
 
@@ -74,18 +60,12 @@ def register(user: RegisterRequest):
 
     try:
         # Check if email already exists
-        cursor.execute(
-            "SELECT id FROM users WHERE email = %s",
-            (user.email,)
-        )
+        cursor.execute("SELECT id FROM users WHERE email = %s", (user.email,))
 
         existing_user = cursor.fetchone()
 
         if existing_user:
-            raise HTTPException(
-                status_code=400,
-                detail="Email already registered"
-            )
+            raise HTTPException(status_code=400, detail="Email already registered")
 
         # Hash password
         hashed_password = pwd_context.hash(user.password)
@@ -97,27 +77,21 @@ def register(user: RegisterRequest):
             VALUES (%s, %s, %s)
             RETURNING id
             """,
-            (
-                user.name,
-                user.email,
-                hashed_password
-            )
+            (user.name, user.email, hashed_password),
         )
 
         user_id = cursor.fetchone()[0]
 
         conn.commit()
 
-        return {
-            "message": "User registered successfully",
-            "user_id": user_id
-        }
+        return {"message": "User registered successfully", "user_id": user_id}
 
     finally:
         close_connection(conn, cursor)
 
 
 # ---------------- LOGIN ----------------
+
 
 @router.post("/login")
 def login(user: LoginRequest):
@@ -133,17 +107,14 @@ def login(user: LoginRequest):
             FROM users
             WHERE email = %s
             """,
-            (user.email,)
+            (user.email,),
         )
 
         db_user = cursor.fetchone()
 
         # User doesn't exist
         if not db_user:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid email or password"
-            )
+            raise HTTPException(status_code=401, detail="Invalid email or password")
 
         user_id = db_user[0]
         full_name = db_user[1]
@@ -151,33 +122,18 @@ def login(user: LoginRequest):
         hashed_password = db_user[3]
 
         # Verify password
-        if not pwd_context.verify(
-            user.password,
-            hashed_password
-        ):
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid email or password"
-            )
+        if not pwd_context.verify(user.password, hashed_password):
+            raise HTTPException(status_code=401, detail="Invalid email or password")
 
         # Create JWT
         token = jwt.encode(
-            {
-                "user_id": user_id,
-                "email": email
-            },
-            SECRET_KEY,
-            algorithm=ALGORITHM
+            {"user_id": user_id, "email": email}, SECRET_KEY, algorithm=ALGORITHM
         )
 
         return {
             "access_token": token,
             "token_type": "bearer",
-            "user": {
-                "id": user_id,
-                "name": full_name,
-                "email": email
-            }
+            "user": {"id": user_id, "name": full_name, "email": email},
         }
 
     finally:
