@@ -62,6 +62,38 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-frontend:${{ github.sha }}
 
+      - name: Create CI environment
+        run: |
+          cat > .env <<EOF
+          POSTGRES_DB=budgetmate
+          POSTGRES_USER=postgres
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_HOST=postgres
+          POSTGRES_PORT=5432
+          EOF
+
+      - name: Start containers
+        run: |
+          docker compose up -d --build\
+
+      - name: Wait for backend
+        run: |
+          echo "Waiting for FastAPI..."
+
+          for i in {1..30}; do
+            if curl --fail http://127.0.0.1:8000/docs > /dev/null 2>&1; then
+              echo "FastAPI is ready!"
+              exit 0
+            fi
+
+            echo "FastAPI not ready yet..."
+            sleep 2
+          done
+
+          echo "FastAPI failed to start."
+          docker compose logs
+          exit 1
+      
       - name: Run API Tests
         run: |
           python -m pip install pytest requests
