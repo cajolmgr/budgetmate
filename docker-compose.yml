@@ -23,6 +23,7 @@ services:
 
 
   backend:
+    image: ${BACKEND_IMAGE:-budgetmate-backend:latest}
     build: ./backend
     container_name: budgetmate-backend
 
@@ -42,12 +43,13 @@ services:
 
 
   frontend:
+    image: ${FRONTEND_IMAGE:-budgetmate-frontend:latest}
     build: ./frontend
     container_name: budgetmate-frontend
 
     ports:
       - "5174:80"
-      
+
     depends_on:
       - backend
 

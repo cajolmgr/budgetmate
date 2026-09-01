@@ -73,8 +73,12 @@ jobs:
           EOF
 
       - name: Start containers
+        env:
+          BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-backend:${{ github.sha }}
+          FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/budgetmate-frontend:${{ github.sha }}
         run: |
-          docker compose up -d --build\
+          docker compose pull
+          docker compose up -d
 
       - name: Wait for backend
         run: |
