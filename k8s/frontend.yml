@@ -1,21 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: frontend
   namespace: budgetmate
+
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: frontend
   template:
-    metadata:
+    metadata: 
       labels:
-        app: backend
+        app: frontend
     spec:
       containers:
-        - name: backend
-          image: kajol1288/budgetmate-backend:latest
+        - name: frontend
+          image: kajol1288/budgetmate-frontend:latest
           ports:
             - containerPort: 8000
           env:
@@ -37,17 +38,15 @@ spec:
               cpu: "500m"
               memory: "512Mi"
 
-
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
+  name: frontend
   namespace: budgetmate
 spec:
   selector:
-    app: backend
+    app: frontend
   ports:
   - port: 8000
     targetPort: 8000
