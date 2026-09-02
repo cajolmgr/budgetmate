@@ -103,6 +103,16 @@ jobs:
           python -m pip install pytest requests
           python -m pytest backend/tests/
 
+      - name: Run Trivy FS Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1' # Fails the pipeline if vulnerabilities are found
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
       - name: Stop containers
         if: always()
         run: docker compose down
