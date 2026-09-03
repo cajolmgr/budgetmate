@@ -18,18 +18,8 @@ spec:
         - name: frontend
           image: kajol1288/budgetmate-frontend:latest
           ports:
-            - containerPort: 8000
-          env:
-            - name: DB_HOST
-              value: postgres
-            - name: DB_PORT
-              value: "5432"
-            - name: DB_NAME
-              value: budgetmate
-            - name: DB_USER
-              value: postgres
-            - name: DB_PASSWORD
-              value: kajol
+            - containerPort: 80
+          
           resources:
             requests:
               cpu: "100m"
@@ -38,16 +28,3 @@ spec:
               cpu: "500m"
               memory: "512Mi"
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend
-  namespace: budgetmate
-spec:
-  selector:
-    app: frontend
-  ports:
-  - port: 8000
-    targetPort: 8000
-  type: ClusterIP
