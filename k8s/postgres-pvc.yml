@@ -1,0 +1,13 @@
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: budgetmate
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

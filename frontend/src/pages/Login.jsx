@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const API = "http://localhost:8000";
+const API = "/api";
 
 const styles = {
   page: {

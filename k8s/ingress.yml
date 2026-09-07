@@ -1,12 +1,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: budgetmate-ingress
+  name: budgetmate-frontend-ingress
   namespace: budgetmate
-
 spec:
   ingressClassName: nginx
-
   rules:
     - host: budgetmate.local
       http:
@@ -19,8 +17,23 @@ spec:
                 port:
                   number: 80
 
-          - path: /api
-            pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: budgetmate-backend-ingress
+  namespace: budgetmate
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: budgetmate.local
+      http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: backend

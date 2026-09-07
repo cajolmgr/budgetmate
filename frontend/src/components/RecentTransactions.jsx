@@ -13,7 +13,7 @@ import {
   FaEllipsisH,
 } from "react-icons/fa";
 
-const API = "http://127.0.0.1:8000";
+const API = "/api";
 
 // Category → Icon mapping
 const categoryIcons = {

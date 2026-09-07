@@ -224,7 +224,7 @@ export default function Income({ onNavigate }) {
     }
 
     const response = await fetch(
-      `http://127.0.0.1:8000/income/${user.id}`
+      `/api/income/${user.id}`
     );
 
     if (!response.ok) {
@@ -333,7 +333,7 @@ export default function Income({ onNavigate }) {
   setIncomeSubmitting(true);
 
   try {
-    const res = await fetch("http://127.0.0.1:8000/add-income", {
+    const res = await fetch("/api/add-income", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

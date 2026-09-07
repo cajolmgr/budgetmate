@@ -5,7 +5,7 @@ namespace: budgetmate
 
 # Backend
 backend:
-  replicaCount: 2
+  replicaCount: 1
 
   image:
     repository: kajol1288/budgetmate-backend
