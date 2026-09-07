@@ -1,0 +1,65 @@
+# BudgetMate Helm configuration
+
+# Namespace
+namespace: budgetmate
+
+# Backend
+backend:
+  replicaCount: 1
+
+  image:
+    repository: kajol1288/budgetmate-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  service:
+    port: 8000
+    targetPort: 8000
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Frontend
+frontend:
+  replicaCount: 1
+
+  image:
+    repository: kajol1288/budgetmate-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  service:
+    port: 80
+    targetPort: 80
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# PostgreSQL
+postgres:
+  image:
+    repository: postgres
+    tag: "18"
+    pullPolicy: IfNotPresent
+
+  database: budgetmate
+  username: postgres
+
+  service:
+    port: 5432
+    targetPort: 5432
+
+  persistence:
+    enabled: true
+    size: 1Gi
+    accessMode: ReadWriteOnce
