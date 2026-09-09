@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: budgetmate
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/cajolmgr/budgetmate
+    targetRevision: HEAD
+    path: helm/budgetmate
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: budgetmate
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
