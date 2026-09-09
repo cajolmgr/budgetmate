@@ -19,3 +19,4 @@ python-jose==3.4.0
 python-multipart==0.0.30
 requests
 pytest
+prometheus-fastapi-instrumentator

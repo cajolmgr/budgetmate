@@ -63,3 +63,8 @@ postgres:
     enabled: true
     size: 1Gi
     accessMode: ReadWriteOnce
+
+serviceMonitor:
+  enabled: true
+  interval: 15s
+  path: /metrics

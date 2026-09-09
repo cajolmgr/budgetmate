@@ -11,7 +11,7 @@ spec:
       app: backend
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace }}
+      - budgetmate
   endpoints:
     - port: backend
       path: /metrics
