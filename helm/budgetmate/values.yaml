@@ -9,7 +9,7 @@ backend:
 
   image:
     repository: kajol1288/budgetmate-backend
-    tag: latest
+    tag: v2
     pullPolicy: IfNotPresent
 
   service:
