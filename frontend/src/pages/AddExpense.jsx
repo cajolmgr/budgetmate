@@ -219,10 +219,9 @@ export default function AddExpense() {
         <div style={styles.card}>
           {/* Header */}
           
-          <div style={styles.cardHeader}>
+          <div style={{ ...styles.cardHeader, justifyContent: "center" }}>
             <div>
               <div style={styles.cardTitle}>Add Expense</div>
-              <div style={styles.cardSubtitle}>Enter your expense details</div>
             </div>
           </div>
 
@@ -316,13 +315,15 @@ export default function AddExpense() {
 const styles = {
   
   card: {
-    background: "#fff",
-    borderRadius: 18,
-    width: "100%",
-    maxWidth: 420,
-    boxShadow: "0 8px 40px rgba(0,0,0,0.08)",
-    overflow: "hidden",
-  },
+  background: "#fff",
+  borderRadius: 18,
+  width: "100%",
+  maxWidth: "900px",
+  boxShadow: "0 8px 40px rgba(0,0,0,0.08)",
+  overflow: "hidden",
+  boxSizing: "border-box",
+  margin: "0 auto",
+},
   cardHeader: {
     display: "flex",
     alignItems: "center",
@@ -332,18 +333,14 @@ const styles = {
   },
 
   cardTitle: {
-    fontFamily: "'Syne', sans-serif",
-    fontWeight: 700,
-    fontSize: 18,
-    color: "#1a1740",
-    letterSpacing: "-0.01em",
-  },
-  cardSubtitle: {
-    fontSize: 12.5,
-    color: "#6d5de8",
-    fontWeight: 400,
-    marginTop: 1,
-  },
+  width: "100%",
+  textAlign: "center",
+  fontWeight: 500,
+  fontSize: 25,
+  color: "#1a1740",
+  letterSpacing: "-0.01em",
+},
+  
   form: {
     padding: "22px 26px 26px",
     display: "flex",
@@ -355,10 +352,11 @@ const styles = {
     flexDirection: "column",
     gap: 7,
   },
-  label: {
-    fontSize: 13,
-    fontWeight: 500,
-    color: "#3d3d52",
-    letterSpacing: "0.01em",
-  },
+ label: {
+  fontSize: 13,
+  fontWeight: 500,
+  color: "#3d3d52",
+  letterSpacing: "0.01em",
+  textAlign: "left",
+},
 };
