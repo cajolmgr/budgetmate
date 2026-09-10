@@ -125,10 +125,7 @@ jobs:
         uses: mikefarah/yq@v4
         with:
           cmd: >
-            yq -i
-            '.backend.image.tag = strenv(IMAGE_TAG) |
-             .frontend.image.tag = strenv(IMAGE_TAG)'
-            helm/budgetmate/values.yaml
+            yq -i '.backend.image.tag = strenv(IMAGE_TAG) | .frontend.image.tag = strenv(IMAGE_TAG)' helm/budgetmate/values.yaml
         env:
           IMAGE_TAG: ${{ github.sha }}
 
