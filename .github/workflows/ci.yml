@@ -18,6 +18,9 @@ jobs:
     name: Build Docker Images
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -116,3 +119,27 @@ jobs:
       - name: Stop containers
         if: always()
         run: docker compose down
+
+      - name: Update Helm image tags
+        if: success() && github.event_name == 'push'
+        uses: mikefarah/yq@v4
+        with:
+          cmd: >
+            yq -i
+            '.backend.image.tag = strenv(IMAGE_TAG) |
+             .frontend.image.tag = strenv(IMAGE_TAG)'
+            helm/budgetmate/values.yaml
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+
+      - name: Commit and push Helm tag update
+        if: success() && github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add helm/budgetmate/values.yaml
+
+          git commit -m "chore: update image tags to ${GITHUB_SHA} [skip ci]" || exit 0
+
+          git push
