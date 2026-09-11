@@ -39,9 +39,9 @@ const styles = {
   },
 
   title: {
-    fontSize: "25px",
+    fontSize: "20px",
     fontWeight: "600",
-    color: "#030367",
+    color: "#07078e",
     margin: "0 0 4px",
   },
 
