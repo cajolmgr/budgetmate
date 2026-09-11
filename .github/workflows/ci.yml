@@ -120,14 +120,22 @@ jobs:
         if: always()
         run: docker compose down
 
+      - name: Install yq
+        if: success() && github.event_name == 'push'
+        run: |
+          sudo wget -qO /usr/local/bin/yq \
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
       - name: Update Helm image tags
         if: success() && github.event_name == 'push'
-        uses: mikefarah/yq@v4
-        with:
-          cmd: >
-            yq -i '.backend.image.tag = strenv(IMAGE_TAG) | .frontend.image.tag = strenv(IMAGE_TAG)' helm/budgetmate/values.yaml
         env:
           IMAGE_TAG: ${{ github.sha }}
+        run: |
+          yq -i '.backend.image.tag = strenv(IMAGE_TAG) | .frontend.image.tag = strenv(IMAGE_TAG)' helm/budgetmate/values.yaml
+
+          echo "Helm values after update:"
+          cat helm/budgetmate/values.yaml
 
       - name: Commit and push Helm tag update
         if: success() && github.event_name == 'push'
