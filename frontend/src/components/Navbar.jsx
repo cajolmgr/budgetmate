@@ -9,9 +9,6 @@ export default function Navbar(){
           className="header-right"
           style={{ paddingBottom: "10px" }}
         >
-            <button className="notif-btn" title="Notifications">
-            <FaBell />
-            </button>
         </div>
     //   </div>
     );
