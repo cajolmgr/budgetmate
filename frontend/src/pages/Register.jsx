@@ -39,7 +39,7 @@ const styles = {
   },
 
   title: {
-    fontSize: "22px",
+    fontSize: "25px",
     fontWeight: "700",
     color: "#1A1A2E",
     margin: "0 0 4px",
