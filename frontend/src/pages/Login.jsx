@@ -184,7 +184,7 @@ export default function Login({ onLoginSuccess }) {
         </div>
 
         <h1 style={styles.title}>
-          Welcome Back to Budgetmate!
+          Welcome Back!
         </h1>
 
         <p style={styles.subtitle}>
