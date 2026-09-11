@@ -40,8 +40,8 @@ const styles = {
 
   title: {
     fontSize: "25px",
-    fontWeight: "700",
-    color: "#1A1A2E",
+    fontWeight: "600",
+    color: "#030367",
     margin: "0 0 4px",
   },
 
