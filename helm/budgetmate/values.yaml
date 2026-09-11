@@ -8,6 +8,7 @@ backend:
   image:
     repository: kajol1288/budgetmate-backend
     tag: 652cee158343d0e6abb83765c02f454ebeac222f
+
     pullPolicy: IfNotPresent
   service:
     port: 8000
