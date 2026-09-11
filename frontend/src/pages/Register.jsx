@@ -265,7 +265,7 @@ export default function Register() {
           {/* Full Name */}
           <div style={styles.field}>
             <label style={styles.label}>
-              Full Name
+              Full Name:
             </label>
 
             <input
@@ -282,7 +282,7 @@ export default function Register() {
           {/* Email */}
           <div style={styles.field}>
             <label style={styles.label}>
-              Email
+              Email:
             </label>
 
             <input
@@ -299,7 +299,7 @@ export default function Register() {
           {/* Password */}
           <div style={styles.field}>
             <label style={styles.label}>
-              Password
+              Password:
             </label>
 
             <input
@@ -316,7 +316,7 @@ export default function Register() {
           {/* Confirm Password */}
           <div style={styles.field}>
             <label style={styles.label}>
-              Confirm Password
+              Confirm Password:
             </label>
 
             <input
