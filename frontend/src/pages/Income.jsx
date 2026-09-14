@@ -115,7 +115,8 @@ function BarChart({ data }) {
   const max = Math.max(1, ...data.map((d) => d.value));
   const step = max / 5;
   const yLabels = [5, 4, 3, 2, 1, 0].map((n) => Math.round((step * n) / 1000));
-
+  console.log("BarChart max:", max, "yLabels:", yLabels);
+  
   return (
     <div>
       <div style={{ display: "flex", gap: 4 }}>
