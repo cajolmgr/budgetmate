@@ -112,8 +112,9 @@ function StatCard({ icon, iconBg, iconColor, label, value, sub, subIcon }) {
 }
 
 function BarChart({ data }) {
-  const max = Math.max(...data.map((d) => d.value));
-  const yLabels = [100, 80, 60, 40, 20, 0];
+  const max = Math.max(1, ...data.map((d) => d.value));
+  const step = max / 5;
+  const yLabels = [5, 4, 3, 2, 1, 0].map((n) => Math.round((step * n) / 1000));
 
   return (
     <div>
@@ -240,6 +241,7 @@ export default function Income({ onNavigate }) {
         day: "numeric",
         year: "numeric",
       }),
+      rawDate: item.income_date, 
       source: item.source,
       note: item.note,
       amount: item.amount,
@@ -253,6 +255,85 @@ export default function Income({ onNavigate }) {
   }
 };
 
+  const monthlyTotals = useMemo(() => {
+  const map = new Map(); // "YYYY-MM" -> total amount
+
+  transactions.forEach((t) => {
+    const d = new Date(t.rawDate);
+    if (isNaN(d)) return;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    map.set(key, (map.get(key) || 0) + Number(t.amount || 0));
+  });
+
+  return map;
+}, [transactions]);
+
+const stats = useMemo(() => {
+  const now = new Date();
+  const thisMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+  const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const lastMonthKey = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, "0")}`;
+
+  const totalIncome = transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
+  const thisMonthTotal = monthlyTotals.get(thisMonthKey) || 0;
+  const lastMonthTotal = monthlyTotals.get(lastMonthKey) || 0;
+
+  const thisMonthChangePct =
+    lastMonthTotal > 0
+      ? Math.round(((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100)
+      : null;
+
+  const sourceTotals = new Map();
+  transactions.forEach((t) => {
+    sourceTotals.set(t.source, (sourceTotals.get(t.source) || 0) + Number(t.amount || 0));
+  });
+
+  let highestSource = null;
+  let highestSourceAmount = 0;
+  sourceTotals.forEach((amount, source) => {
+    if (amount > highestSourceAmount) {
+      highestSourceAmount = amount;
+      highestSource = source;
+    }
+  });
+
+  const highestSourcePct =
+    totalIncome > 0 ? Math.round((highestSourceAmount / totalIncome) * 100) : 0;
+
+  const monthsWithData = monthlyTotals.size;
+  const avgMonthlyIncome = monthsWithData > 0 ? totalIncome / monthsWithData : 0;
+
+  return {
+    totalIncome,
+    thisMonthTotal,
+    thisMonthChangePct,
+    highestSource,
+    highestSourceAmount,
+    highestSourcePct,
+    avgMonthlyIncome,
+    sourceTotals,
+  };
+}, [transactions, monthlyTotals]);
+
+const trendData = useMemo(() => {                                    // 👈 ADD HERE (Step 4)
+  const now = new Date();
+  let monthsBack = 6;
+  if (chartRange === "Last 3 Months") monthsBack = 3;
+  if (chartRange === "This Year") monthsBack = now.getMonth() + 1;
+
+  const result = [];
+  for (let i = monthsBack - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    result.push({
+      month: d.toLocaleDateString("en-US", { month: "short" }),
+      value: monthlyTotals.get(key) || 0,
+    });
+  }
+  return result;
+}, [monthlyTotals, chartRange]);
 
   const filtered = transactions.filter((t) => {
     const matchSource = sourceFilter === "All Sources" || t.source === sourceFilter;
@@ -336,10 +417,30 @@ export default function Income({ onNavigate }) {
 
         {/* Stat Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 20 }}>
-          <StatCard icon="💼" iconBg="#E1F5EE" iconColor="#0F6E56" label="Total Income" value="NPR 85,000" sub="8% vs last month" subIcon="up" />
-          <StatCard icon="📅" iconBg="#E6F1FB" iconColor="#185FA5" label="This Month" value="NPR 25,000" sub="12% vs last month" subIcon="up" />
-          <StatCard icon="🏆" iconBg="#FAEEDA" iconColor="#854F0B" label="Highest Source" value="Salary" sub="NPR 60,000 (71%)" />
-          <StatCard icon="📈" iconBg="#EEEDFE" iconColor="#534AB7" label="Avg Monthly Income" value="NPR 18,500" sub="8% vs last 3 months" subIcon="up" />
+          <StatCard
+            icon="💼" iconBg="#E1F5EE" iconColor="#0F6E56"
+            label="Total Income"
+            value={`NPR ${stats.totalIncome.toLocaleString()}`}
+            sub={transactions.length > 0 ? `${transactions.length} transactions` : undefined}
+          />
+          <StatCard
+            icon="📅" iconBg="#E6F1FB" iconColor="#185FA5"
+            label="This Month"
+            value={`NPR ${stats.thisMonthTotal.toLocaleString()}`}
+            sub={stats.thisMonthChangePct !== null ? `${Math.abs(stats.thisMonthChangePct)}% vs last month` : "No data last month"}
+            subIcon={stats.thisMonthChangePct !== null && stats.thisMonthChangePct >= 0 ? "up" : undefined}
+          />
+          <StatCard
+            icon="🏆" iconBg="#FAEEDA" iconColor="#854F0B"
+            label="Highest Source"
+            value={stats.highestSource || "—"}
+            sub={stats.highestSource ? `NPR ${stats.highestSourceAmount.toLocaleString()} (${stats.highestSourcePct}%)` : undefined}
+          />
+          <StatCard
+            icon="📈" iconBg="#EEEDFE" iconColor="#534AB7"
+            label="Avg Monthly Income"
+            value={`NPR ${Math.round(stats.avgMonthlyIncome).toLocaleString()}`}
+          />
         </div>
 
         {/* Charts Row */}
@@ -357,7 +458,7 @@ export default function Income({ onNavigate }) {
                 <option>This Year</option>
               </select>
             </div>
-            <BarChart data={BAR_DATA} />
+            <BarChart data={trendData} />
           </div>
 
           <div style={{ background: "#fff", border: "0.5px solid #e5e7eb", borderRadius: 12, padding: 16 }}>
