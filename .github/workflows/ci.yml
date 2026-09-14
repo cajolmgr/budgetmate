@@ -144,7 +144,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add helm/budgetmate/values.yaml
-
           git commit -m "chore: update image tags to ${GITHUB_SHA} [skip ci]" || exit 0
 
-          git push
+          for i in 1 2 3 4 5; do
+            git push && exit 0
+            echo "Push rejected, retrying with rebase..."
+            git pull --rebase origin ${{ github.ref_name }}
+          done
+
+          echo "Failed to push after retries"
+          exit 1
