@@ -11,6 +11,7 @@ spec:
       chart: kube-prometheus-stack
       targetRevision: 90.0.0
       helm:
+        skipCrds: true
         valueFiles:
           - $values/monitoring-values.yaml
 
