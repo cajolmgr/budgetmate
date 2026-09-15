@@ -18,28 +18,6 @@ const COLORS = {
   other: { bg: "#FCEBEB", text: "#A32D2D", dot: "#E24B4A" },
 };
 
-
-const INCOME_SOURCES = ["Salary", "Freelance", "Business", "Investment", "Other"];
-const PAYMENT_METHODS = ["Cash", "eSewa", "Khalti", "Bank Transfer"]; 
-
-
-const BAR_DATA = [
-  { month: "Jan", value: 48000 },
-  { month: "Feb", value: 55000 },
-  { month: "Mar", value: 62000 },
-  { month: "Apr", value: 44000 },
-  { month: "May", value: 70000 },
-  { month: "Jun", value: 85000 },
-];
-
-const DONUT_SEGMENTS = [
-  { label: "Salary", pct: 71, color: "#1D9E75", offset: 0 },
-  { label: "Freelance", pct: 14, color: "#378ADD", offset: 71 },
-  { label: "Business", pct: 7, color: "#EF9F27", offset: 85 },
-  { label: "Investment", pct: 5, color: "#7F77DD", offset: 92 },
-  { label: "Other", pct: 3, color: "#E24B4A", offset: 97 },
-];
-
 const CIRCUMFERENCE = 2 * Math.PI * 44; // r=44
 
 function SourceBadge({ source }) {
@@ -55,7 +33,7 @@ function SourceBadge({ source }) {
   return (
     <span
       style={{
-        display: "inline-flex",
+        display: "inline-flex", 
         alignItems: "center",
         justifyContent: "center",
         gap: 8,
@@ -335,6 +313,25 @@ const trendData = useMemo(() => {                                    // 👈 ADD
   return result;
 }, [monthlyTotals, chartRange]);
 
+const donutSegments = useMemo(() => {
+  const total = stats.totalIncome;
+  if (!total) return [];
+
+  const palette = ["#1D9E75", "#378ADD", "#EF9F27", "#7F77DD", "#E24B4A", "#A78BFA", "#F472B6"];
+  let offset = 0;
+  let i = 0;
+  const segments = [];
+
+  stats.sourceTotals.forEach((amount, source) => {
+    const pct = Math.round((amount / total) * 100);
+    segments.push({ label: source, pct, color: palette[i % palette.length], offset });
+    offset += pct;
+    i += 1;
+  });
+
+  return segments;
+}, [stats]);
+
   const filtered = transactions.filter((t) => {
     const matchSource = sourceFilter === "All Sources" || t.source === sourceFilter;
     const matchSearch =
@@ -465,7 +462,7 @@ const trendData = useMemo(() => {                                    // 👈 ADD
             <div style={{ marginBottom: 16 }}>
               <span style={{ fontSize: 15, fontWeight: 600, color: "#111827" }}>Income by Source</span>
             </div>
-            <DonutChart segments={DONUT_SEGMENTS} />
+            <DonutChart segments={donutSegments} />
           </div>
         </div>
 
