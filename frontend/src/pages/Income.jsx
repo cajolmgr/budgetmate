@@ -9,20 +9,13 @@ import {
   FaMoneyBillWave,
 } from "react-icons/fa";
 
-
-const COLORS = {
-  salary: { bg: "#E1F5EE", text: "#0F6E56", dot: "#1D9E75" },
-  freelance: { bg: "#E6F1FB", text: "#185FA5", dot: "#378ADD" },
-  business: { bg: "#FAEEDA", text: "#854F0B", dot: "#EF9F27" },
-  investment: { bg: "#EEEDFE", text: "#534AB7", dot: "#7F77DD" },
-  other: { bg: "#FCEBEB", text: "#A32D2D", dot: "#E24B4A" },
-};
+const NEUTRAL_BADGE = { bg: "#F3F4F6", text: "#111827" };
 
 const CIRCUMFERENCE = 2 * Math.PI * 44; // r=44
 
 function SourceBadge({ source }) {
   const key = source.toLowerCase().replace(/\s+/g, "");
-  const style = COLORS[key] || COLORS.other;
+  const style = NEUTRAL_BADGE;
   const icons = {
     salary: <FaBriefcase size={14} />,
     freelance: <FaLaptopCode size={14} />,
