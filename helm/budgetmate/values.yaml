@@ -7,7 +7,7 @@ backend:
   replicaCount: 1
   image:
     repository: kajol1288/budgetmate-backend
-    tag: 1cb80eaff1cc07ef023dcab1e3807ba318bb8f60
+    tag: c027e7485fe5e7af7478bc79db338c84d4e41b53
     pullPolicy: IfNotPresent
   service:
     port: 8000
@@ -24,7 +24,7 @@ frontend:
   replicaCount: 1
   image:
     repository: kajol1288/budgetmate-frontend
-    tag: 1cb80eaff1cc07ef023dcab1e3807ba318bb8f60
+    tag: c027e7485fe5e7af7478bc79db338c84d4e41b53
     pullPolicy: IfNotPresent
   service:
     port: 80
